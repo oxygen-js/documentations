@@ -1,0 +1,18 @@
+У меня есть сборник статей про Angular Signals. Они написаны на английском языке. Пожалуйста переведи их на русский язык. Сделай 3шт. переводов на 1 статью. 
+- Первый стиль. Подбери стиль перевода сам.
+- Второй стиль. Просто перевод
+- Третий стиль. С техническим смыслом.
+
+Signals
+1) https://www.angulararchitects.io/en/blog/angular-signals/
+2) https://www.angulararchitects.io/en/blog/component-communication-with-signals-inputs-two-way-bindings-and-content-view-queries/
+3) https://www.angulararchitects.io/en/blog/successful-with-signals-in-angular-3-effective-rules-for-your-architecture/
+4) https://www.angulararchitects.io/en/blog/skillfully-using-signals-in-angular-selected-hints-for-professional-use/
+5) https://www.angulararchitects.io/en/blog/when-not-to-use-effects-in-angular-and-what-to-do-instead/
+6) https://www.angulararchitects.io/en/blog/asynchronous-resources-with-angulars-new-resource-api/
+7) https://www.angulararchitects.io/en/blog/streaming-resources-in-angular-19-2-details-and-semantics/
+8) https://www.angulararchitects.io/en/blog/streaming-resources-for-a-chat-with-web-sockets-messages-in-a-glitch-free-world/
+9) https://www.angulararchitects.io/en/blog/learning-httpresource-with-super-mario/
+
+
+И сохрани их на диске в /run/user/1000/gvfs/smb-share:server=192.168.50.1,share=storage,user=andruxa/Documentations/Angular signals для каждой статьи создай номер + название статьи и положи в каждый по эти три перевода. Сохрани их в формате .md 
