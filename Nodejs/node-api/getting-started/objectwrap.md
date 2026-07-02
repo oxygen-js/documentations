@@ -1,0 +1,64 @@
+# Object Wrap
+
+Это руководство — альтернатива статье [Ваш первый проект](/learn/node-api/getting-started/your-first-project.html). Вместо экспорта простой функции оно демонстрирует, как представить C++-объект в виде объекта JavaScript с помощью класса `ObjectWrap` из `node-addon-api`.
+
+Прежде чем начать, убедитесь, что у вас установлены все необходимые [предварительные требования](/learn/node-api/getting-started/prerequisites.html) и [инструменты](/learn/node-api/getting-started/tools.html), и прочитайте [Анатомию проекта Node-API](/learn/node-api/getting-started/project-structure.html), чтобы разобраться в типичной структуре проекта и конфигурационных файлах.
+
+## Создание проекта
+
+Скопируйте пример Object Wrap из репозитория [node-addon-examples](https://github.com/nodejs/node-addon-examples):
+```bash
+git clone https://github.com/nodejs/node-addon-examples.git
+cp -r node-addon-examples/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api object-wrap-demo
+cd object-wrap-demo
+npm install
+```
+
+Либо настройте проект вручную:
+```bash
+mkdir object-wrap-demo
+cd object-wrap-demo
+npm init -y
+npm install node-addon-api
+```
+
+Затем создайте исходные файлы, описанные ниже. После настройки проекта проверьте, что всё работает:
+```
+npm test
+```
+
+## binding.gyp
+
+Файл проекта [**binding.gyp**](https://github.com/nodejs/node-addon-examples/blob/main/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api/binding.gyp) следует стандартному формату (полное объяснение формата `binding.gyp` и того, как `node-gyp` его использует, смотрите в [Анатомии проекта Node-API](/learn/node-api/getting-started/project-structure.html#bindinggyp)).
+
+## src/object_wrap_demo.h и src/object_wrap_demo.cc
+
+[**object_wrap_demo.h**](https://github.com/nodejs/node-addon-examples/blob/main/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api/src/object_wrap_demo.h) и [**object_wrap_demo.cc**](https://github.com/nodejs/node-addon-examples/blob/main/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api/src/object_wrap_demo.cc) — это сердце проекта. Заголовочный файл `napi.h` поступает из `node-addon-api` и объявляет C++-классы, представляющие значения JavaScript.
+
+`object_wrap_demo.cc` определяет C++-класс `ObjectWrapDemo`:
+
+  * **Конструктор** принимает одну строку JavaScript и сохраняет её в приватном члене `_greeterName`.
+  * **Метод `Greet`** принимает строку JavaScript, выводит две строки в stdout и возвращает значение, изначально переданное в конструктор.
+  * **Статический метод `GetClass`** возвращает дескриптор класса, который нужен Node-API, чтобы знать, как диспетчеризировать вызовы из JavaScript в C++-методы.
+
+Функция `Init` экспортирует класс `ObjectWrapDemo`, вызывая `ObjectWrapDemo::GetClass`. Макрос `NODE_API_MODULE` в самом низу гарантирует, что `Init` будет вызвана при загрузке модуля.
+
+## lib/binding.js
+
+[**binding.js**](https://github.com/nodejs/node-addon-examples/blob/main/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api/lib/binding.js) определяет класс `ObjectWrapDemo`, оборачивающий нативный бинарный файл. При вызове `new ObjectWrapDemo(value)` создаётся базовый C++-объект, который сохраняется как `_addonInstance`. Метод JavaScript `greet` делегирует одноимённому методу на C++-объекте.
+
+## test/test_binding.js
+
+[**test_binding.js**](https://github.com/nodejs/node-addon-examples/blob/main/src/2-js-to-native-conversion/object-wrap-demo/node-addon-api/test/test_binding.js) показывает, как использовать класс JavaScript `ObjectWrapDemo` из `lib/binding.js`. Обратите внимание, что вызов `greet` производит две строки вывода в stdout как побочный эффект вызовов `printf` в C++-коде.
+
+## Заключение
+
+Этот проект показывает, как использовать `ObjectWrap`, чтобы представить C++-объект с состоянием в виде объекта JavaScript. Вот что можно попробовать дальше:
+
+  * Запустите `test_binding.js` в отладчике. Пройдите по коду шаг за шагом и понаблюдайте, как объект JavaScript выглядит с точки зрения отладчика.
+  * Измените `test_binding.js` так, чтобы подключать скомпилированный бинарный файл напрямую, а не через `binding.js`, и понаблюдайте разницу в отладчике.
+  * Расширьте `object_wrap_demo.cc`, чтобы экспортировать дополнительные методы или свойства класса `ObjectWrapDemo`.
+
+---
+
+> _Перевод официальной документации Node.js (раздел Learn). Источник: <https://nodejs.org/en/learn/node-api/getting-started/objectwrap>. Оригинал распространяется по лицензии MIT._

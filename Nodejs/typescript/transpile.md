@@ -1,0 +1,79 @@
+# Запуск кода на TypeScript с помощью транспиляции
+
+Транспиляция — это процесс преобразования исходного кода с одного языка на другой. В случае TypeScript это процесс преобразования кода на TypeScript в код на JavaScript. Это необходимо, потому что браузеры и Node.js не выполняют код на TypeScript напрямую.
+
+## Компиляция TypeScript в JavaScript
+
+Самый распространённый способ запустить код на TypeScript — сначала скомпилировать его в JavaScript. Это можно сделать с помощью компилятора TypeScript `tsc`.
+
+**Шаг 1:** Напишите ваш код на TypeScript в файле, например `example.ts`.
+```ts
+type User = {
+  name: string;
+  age: number;
+};
+
+function isAdult(user: User): boolean {
+  return user.age >= 18;
+}
+
+const justine = {
+  name: 'Justine',
+  age: 23,
+} satisfies User;
+
+const isJustineAnAdult = isAdult(justine);
+```
+
+**Шаг 2:** Установите TypeScript локально с помощью менеджера пакетов:
+
+В этом примере мы будем использовать npm; вы можете ознакомиться с [нашим введением в менеджер пакетов npm](/learn/getting-started/an-introduction-to-the-npm-package-manager) для получения дополнительной информации.
+```
+npm i -D typescript # -D — это сокращение для --save-dev
+```
+
+**Шаг 3:** Скомпилируйте ваш код на TypeScript в JavaScript с помощью команды `tsc`:
+```
+npx tsc example.ts
+```
+
+> **ПРИМЕЧАНИЕ:** `npx` — это инструмент, который позволяет запускать пакеты Node.js без их глобальной установки.
+
+`tsc` — это компилятор TypeScript, который возьмёт наш код на TypeScript и скомпилирует его в JavaScript. Эта команда приведёт к появлению нового файла с именем `example.js`, который мы можем запустить с помощью Node.js. Теперь, когда мы знаем, как компилировать и запускать код на TypeScript, давайте посмотрим на способность TypeScript предотвращать ошибки в действии!
+
+**Шаг 4:** Запустите ваш код на JavaScript с помощью Node.js:
+```
+node example.js
+```
+
+Вы должны увидеть вывод вашего кода на TypeScript в терминале.
+
+## Если есть ошибки типов
+
+Если в вашем коде на TypeScript есть ошибки типов, компилятор TypeScript отловит их и не даст вам запустить код. Например, если вы измените свойство `age` объекта `justine` на строку, TypeScript выдаст ошибку:
+
+Мы изменим наш код следующим образом, чтобы намеренно внести ошибку типа:
+```ts
+// @errors: 2322 2554
+type User = {
+  name: string;
+  age: number;
+};
+
+function isAdult(user: User): boolean {
+  return user.age >= 18;
+}
+
+const justine: User = {
+  name: 'Justine',
+  age: 'Secret!',
+};
+
+const isJustineAnAdult: string = isAdult(justine, "I shouldn't be here!");
+```
+
+Как видите, TypeScript очень полезен в отлове ошибок ещё до того, как они произойдут. Это одна из причин, почему TypeScript так популярен среди разработчиков.
+
+---
+
+> _Перевод официальной документации Node.js (раздел Learn). Источник: https://nodejs.org/en/learn/typescript/transpile. Оригинал распространяется по лицензии MIT._

@@ -1,0 +1,62 @@
+# Ваш первый проект
+
+Прежде чем начать, убедитесь, что вы установили все необходимые [требования](/learn/node-api/getting-started/prerequisites.html) и [инструменты](/learn/node-api/getting-started/tools.html), и прочитайте [Устройство проекта Node-API](/learn/node-api/getting-started/project-structure.html), чтобы разобраться в типовой структуре и конфигурационных файлах, общих для всех проектов `node-addon-api`.
+
+В этом руководстве используется `node-addon-api` — уровень обёртки на C++.
+
+## Создание проекта
+
+Самый быстрый способ получить работающий проект — скопировать пример Hello World из репозитория [node-addon-examples](https://github.com/nodejs/node-addon-examples):
+```bash
+git clone https://github.com/nodejs/node-addon-examples.git
+cp -r node-addon-examples/src/1-getting-started/a-first-project/node-addon-api hello-world
+cd hello-world
+npm install
+```
+
+Как вариант, настройте проект вручную:
+```bash
+mkdir hello-world
+cd hello-world
+npm init -y
+npm install node-addon-api
+```
+
+Затем создайте исходные файлы, описанные ниже. Как только проект настроен, проверьте, что всё работает:
+```
+npm test
+```
+
+## src/hello_world.cc
+
+[`hello_world.cc`](https://github.com/nodejs/node-addon-examples/blob/main/src/1-getting-started/a-first-project/node-addon-api/src/hello_world.cc) — это, пожалуй, самый простой полезный файл Node-API, который вы можете написать.
+
+Файл определяет функцию `Method` на C++, которая принимает единственный аргумент `Napi::CallbackInfo&`. Этот объект `info` предоставляет доступ к окружению JavaScript, включая любые аргументы, переданные из JavaScript.
+
+> `info` ведёт себя как массив аргументов JavaScript.
+
+`Method` использует `info`, чтобы получить `Napi::Env`, затем создаёт и возвращает `Napi::String` со значением `"world"`.
+
+Функция `Init` регистрирует единственный экспорт из этого модуля: имя `"HelloWorld"` сопоставляется функции `Method`.
+
+Макрос `NODE_API_MODULE` в конце файла гарантирует, что `Init` будет вызвана при загрузке модуля.
+
+## lib/binding.js
+
+[`binding.js`](https://github.com/nodejs/node-addon-examples/blob/main/src/1-getting-started/a-first-project/node-addon-api/lib/binding.js) загружает скомпилированный бинарный файл и повторно экспортирует его содержимое. Единственный экспорт из бинарного файла — функция `HelloWorld`.
+
+## test/test_binding.js
+
+[`test_binding.js`](https://github.com/nodejs/node-addon-examples/blob/main/src/1-getting-started/a-first-project/node-addon-api/test/test_binding.js) использует `require`, чтобы загрузить функцию `HelloWorld` из `binding.js`. Функция `testBasic` вызывает её и проверяет результат.
+
+## Заключение
+
+Этот проект демонстрирует минимальный модуль Node-API, экспортирующий одну функцию. Вот что можно попробовать дальше:
+
+  * Запустите `test_binding.js` в отладчике. Пройдите по коду пошагово и посмотрите, какую видимость вы имеете в отношении объекта JavaScript, созданного кодом на C++.
+  * Измените `test_binding.js` так, чтобы подключать скомпилированный бинарный файл напрямую, вместо того чтобы идти через `binding.js`. Пройдите пошагово в отладчике и отметьте разницу.
+  * Измените `hello_world.cc` так, чтобы читать аргументы, переданные из JavaScript. Хорошим ориентиром послужат [примеры `node-addon-api`](https://github.com/nodejs/node-addon-api#examples).
+
+---
+
+> _Перевод официальной документации Node.js (раздел Learn). Источник: https://nodejs.org/en/learn/node-api/getting-started/your-first-project. Оригинал распространяется по лицензии MIT._
